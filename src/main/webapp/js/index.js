@@ -17,7 +17,7 @@ var connection,
 
 function initStats(containerId) {
     function statsInit(mode) {
-        var stats = new Stats();
+        let stats = new Stats();
         stats.setMode(mode);
         with (stats.domElement.style) {
             position = "relative";
@@ -28,7 +28,7 @@ function initStats(containerId) {
         return stats;
     }
 
-    var fps = statsInit(0),
+    let fps = statsInit(0),
         ms = statsInit(1),
         mb = statsInit(2);
     function statsUpdate() {
@@ -40,8 +40,8 @@ function initStats(containerId) {
     return statsUpdate;
 }
 function initKeyboard() {
-    var keys = new Array(256);
-    for (var i = 0; i < 256; i++) {
+    let keys = new Array(256);
+    for (let i = 0; i < 256; i++) {
         keys[i] = false;
     }
 
@@ -82,7 +82,7 @@ function initKeyboard() {
     return processKeyboard;
 }
 function initMouseLook() {
-    var startX, startY,
+    let startX, startY,
         rot = new THREE.Matrix4();
 
     function dragStop() {
@@ -126,38 +126,38 @@ function initRenderTarget(){
 }
 function initScene() {
 
-    var spotLight = new THREE.SpotLight(0xffffff);
+    let spotLight = new THREE.SpotLight(0xffffff);
     spotLight.position.set(-200, 200, -200);
     spotLight.castShadow = true;
     scene.add(spotLight);
 
-    var light = new THREE.AmbientLight(0x0e0e0e);
+    let light = new THREE.AmbientLight(0x0e0e0e);
     scene.add(light);
 
-    var axes = new THREE.AxisHelper(20);
+    let axes = new THREE.AxisHelper(20);
     scene.add(axes);
 
-    var plGeo = new THREE.PlaneGeometry(400, 400),
+    let plGeo = new THREE.PlaneGeometry(400, 400),
         plMat = new THREE.MeshBasicMaterial({color: 0x0000b0, wireframe: true}),
         plane;
-    var pos = [
+    let pos = [
         [ -200,    0,    0  ],
         [  200,    0,    0  ],
         [    0, -200,    0  ],
         [    0,  200,    0  ],
         [    0,    0, -200  ],
-        [    0,    0,  200  ],
+        [    0,    0,  200  ]
     ];
-    var rot = [
-        [ 0, Math.PI/2, 0,],
-        [ 0, Math.PI/2, 0,],
+    let rot = [
+        [ 0, Math.PI/2, 0],
+        [ 0, Math.PI/2, 0],
         [ Math.PI/2, 0, 0],
         [ Math.PI/2, 0, 0],
         [ 0, 0, Math.PI],
-        [ 0, 0, Math.PI],
+        [ 0, 0, Math.PI]
     ];
     console.log(pos);
-    for(var i = 0; i < 6; i++){
+    for(let i = 0; i < 6; i++){
         plane = new THREE.Mesh(plGeo, plMat);
         plane.position.set(pos[i][0], pos[i][1], pos[i][2]);
         plane.rotateX(rot[i][0]);
@@ -186,30 +186,29 @@ function MainLoop(){
 }
 
 function main() {
-    connection = new WebSocket("ws://" + document.location.host + document.location.pathname + "server");
-    connection.onmessage = function(e){
-        if(e.data.substring(0, 8) == "callback"){
-            console.log(e.data);
+    connection = new MassageHandler(
+        new WebSocket("ws://" + document.location.host + document.location.pathname + "server")
+    );
+    
+    connection.register('callback', data => {
+        console.log(data);
+    });
+    connection.register('init', data => {
+        console.log("length = " + data.length);
+        ballsAmount = data.length;
+        balls = new Array();
+        for(let i = 0; i < ballsAmount; i++){
+            balls[i] = new Ball(parseFloat(data[i]), new THREE.Vector3(0, 0, 0), parseInt(Math.random()*16777215));
+            balls[i].add();
         }
-        else if(e.data.substring(0, 4) == "init"){
-            var a = JSON.parse(e.data.substring(5));
-            console.log("length = " + a.length);
-            ballsAmount = a.length;
-            balls = new Array();
-            for(var i = 0; i < ballsAmount; i++){
-                balls[i] = new Ball(parseFloat(a[i]), new THREE.Vector3(0, 0, 0), parseInt(Math.random()*16777215));
-                balls[i].add();
-            }
+    });
+    connection.register('update', data => {
+        for (let i = 0; i < ballsAmount; i++) {
+            balls[i].Mesh.position.set(data[i][0], data[i][1], data[i][2]);
         }
-        else {
-            var a = JSON.parse(e.data);
-            for (var i = 0; i < ballsAmount; i++) {
-                balls[i].Mesh.position.set(a[i][0], a[i][1], a[i][2]);
-            }
-        }
-    };
+    });
 
-    var gui = new dat.GUI();
+    let gui = new dat.GUI();
     gui.add(controls, "Rotation of cube speed", 0, 0.5);
     gui.add(controls, "Sphere's jump speed", 0, 0.5);
     gui.add(controls, "Camera's velocity", 0, 5);
@@ -225,21 +224,3 @@ function main() {
 
     return 0;
 }
-
-/*class*/function Ball(radius, position, color){
-//private:
-    var geometry = new THREE.SphereGeometry(radius, 32, 32),
-        material = new THREE.MeshPhongMaterial({color: color});
-
-//public:
-    this.Mesh = new THREE.Mesh(geometry, material);
-    this.Mesh.castShadow = true;
-    this.Mesh.position.set(position.x, position.y, position.z);
-
-    this.add = function(){
-        scene.add(this.Mesh);
-    };
-    this.remove = function(){
-        scene.remove(this.Mesh);
-    };
-};

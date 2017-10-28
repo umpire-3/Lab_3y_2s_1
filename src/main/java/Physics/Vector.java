@@ -10,7 +10,7 @@ public class Vector {
     public float z;
 
     public static Vector Null(){
-        return new Vector(0.0f, 0.0f, 0.0f);
+        return new Vector();
     }
 
     public Vector(){

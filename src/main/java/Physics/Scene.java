@@ -32,7 +32,7 @@ public class Scene {
         }
     }
 
-    public void WallsCollision(Ball ball){
+    private void WallsCollision(Ball ball){
         if(ball.position.x < -CellSize - Edge + ball.radius){
             ball.position.x = -CellSize + ball.radius;
             ball.velocity.x = -ball.velocity.x;
@@ -65,7 +65,7 @@ public class Scene {
         }
     }
 
-    public boolean SolveCollision(Ball b1, Ball b2){
+    private boolean SolveCollision(Ball b1, Ball b2){
         Vector Axis = b2.position.sub(b1.position);
         float dist = b1.radius + b2.radius + Edge;
         if(Axis.Abs() < dist) {
@@ -95,9 +95,9 @@ public class Scene {
     }
 
     public void Update(float dt){
-        for(int i = 0; i < balls.size(); i++){
-            WallsCollision(balls.get(i));
-            balls.get(i).move(dt);
+        for (Ball ball : balls) {
+            WallsCollision(ball);
+            ball.move(dt);
         }
         for(int i = 0; i < balls.size() - 1; i++){
             for(int j = i + 1; j < balls.size(); j++){
