@@ -20,12 +20,12 @@ class MassageHandler {
 
     proccesMessage(event) {
         let msg = JSON.parse(event.data),
-            command = msg.command;
+        {command, data} = msg;
 
         if(!this.router.hasOwnProperty(command)) {
-            console.log('No action for ' + command + ' command')
+            console.log(`No action for ${command} command`)
         }
 
-        this.router[command](msg.data);
+        this.router[command](data);
     }
 }

@@ -60,8 +60,8 @@ function initKeyboard() {
         }
     }
 
-    document.addEventListener("keydown", function (e) {
-        console.log(e.keyCode);
+    document.addEventListener("keydown", e => {
+        //console.log(e.keyCode);
 
         if (e.keyCode == 32) { // space
             connection.send("gravity");
@@ -74,7 +74,7 @@ function initKeyboard() {
         return false;
     });
 
-    document.addEventListener("keyup", function (e) {
+    document.addEventListener("keyup", e => {
         keys[e.keyCode] = false;
         return false;
     });
