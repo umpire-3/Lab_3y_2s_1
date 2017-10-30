@@ -5,11 +5,11 @@ function $(e){
 }
 
 var connection,
-    controls = new function(){
-        this["Rotation of cube speed"] = 0.02;
-        this["Sphere's jump speed"] = 0.04;
-        this["Camera's velocity"] = 5.0;
-        this["Mouse look speed"] = 0.002;
+    controls = {
+        'Rotation of cube speed': 0.02,
+        'Sphere\'s jump speed': 0.04,
+        'Camera\'s velocity': 5.0,
+        'Mouse look speed': 0.002
     },
     scene, camera, renderer,
     balls, ballsAmount,
@@ -20,7 +20,7 @@ function initStats(containerId) {
         let stats = new Stats();
         stats.setMode(mode);
         with (stats.domElement.style) {
-            position = "relative";
+            position = 'relative';
             /*left = "0px";
              top = "0px";*/
         }
@@ -40,41 +40,38 @@ function initStats(containerId) {
     return statsUpdate;
 }
 function initKeyboard() {
-    let keys = new Array(256);
-    for (let i = 0; i < 256; i++) {
-        keys[i] = false;
-    }
+    let keys = new Array(256).fill(false);
 
     function processKeyboard() {
         if (keys[87]) { // w
-            camera.position.addScaledVector(camera.getWorldDirection(), controls["Camera's velocity"]);
+            camera.position.addScaledVector(camera.getWorldDirection(), controls['Camera\'s velocity']);
         }
         if (keys[65]) { // a
-            camera.position.addScaledVector(new THREE.Vector3().crossVectors(camera.up, camera.getWorldDirection()), controls["Camera's velocity"]);
+            camera.position.addScaledVector(new THREE.Vector3().crossVectors(camera.up, camera.getWorldDirection()), controls['Camera\'s velocity']);
         }
         if (keys[83]) { // s
-            camera.position.addScaledVector(camera.getWorldDirection().negate(), controls["Camera's velocity"]);
+            camera.position.addScaledVector(camera.getWorldDirection().negate(), controls['Camera\'s velocity']);
         }
         if (keys[68]) { // d
-            camera.position.addScaledVector(new THREE.Vector3().crossVectors(camera.getWorldDirection(), camera.up), controls["Camera's velocity"]);
+            camera.position.addScaledVector(new THREE.Vector3().crossVectors(camera.getWorldDirection(), camera.up), controls['Camera\'s velocity']);
         }
     }
 
-    document.addEventListener("keydown", e => {
+    document.addEventListener('keydown', e => {
         //console.log(e.keyCode);
 
         if (e.keyCode == 32) { // space
-            connection.send("gravity");
+            connection.send('gravity');
         }
         if (e.keyCode == 90) { // z
-            connection.send("disable");
+            connection.send('disable');
         }
 
         keys[e.keyCode] = true;
         return false;
     });
 
-    document.addEventListener("keyup", e => {
+    document.addEventListener('keyup', e => {
         keys[e.keyCode] = false;
         return false;
     });
@@ -92,8 +89,8 @@ function initMouseLook() {
     }
 
     function mouselook(e) {
-        dx = (startX - e.clientX) * controls["Mouse look speed"];
-        dy = (startY - e.clientY) * controls["Mouse look speed"];
+        dx = (startX - e.clientX) * controls['Mouse look speed'];
+        dy = (startY - e.clientY) * controls['Mouse look speed'];
         startX = e.clientX;
         startY = e.clientY;
         rot.makeRotationAxis(camera.up, dx);
@@ -149,12 +146,12 @@ function initScene() {
         [    0,    0,  200  ]
     ];
     let rot = [
-        [ 0, Math.PI/2, 0],
-        [ 0, Math.PI/2, 0],
-        [ Math.PI/2, 0, 0],
-        [ Math.PI/2, 0, 0],
-        [ 0, 0, Math.PI],
-        [ 0, 0, Math.PI]
+        [     0    , Math.PI/2,    0    ],
+        [     0    , Math.PI/2,    0    ],
+        [ Math.PI/2,     0    ,    0    ],
+        [ Math.PI/2,     0    ,    0    ],
+        [     0    ,     0    , Math.PI ],
+        [     0    ,     0    , Math.PI ]
     ];
     console.log(pos);
     for(let i = 0; i < 6; i++){
@@ -171,30 +168,25 @@ function initScene() {
     camera.lookAt(scene.position);
 }
 
-function update(){
-    //updateStats();
-    processKeyboard();
-}
-function render(){
-    renderer.render(scene, camera);
-}
-
 function MainLoop(){
     requestAnimationFrame(MainLoop);
-    update();
-    render();
+
+    updateStats();
+    processKeyboard();
+
+    renderer.render(scene, camera);
 }
 
 function main() {
     connection = new MassageHandler(
-        new WebSocket("ws://" + document.location.host + document.location.pathname + "server")
+        new WebSocket(`ws://${document.location.host + document.location.pathname}server`)
     );
     
     connection.register('callback', data => {
         console.log(data);
     });
     connection.register('init', data => {
-        console.log("length = " + data.length);
+        console.log('length = ' + data.length);
         ballsAmount = data.length;
         balls = new Array();
         for(let i = 0; i < ballsAmount; i++){
@@ -209,12 +201,12 @@ function main() {
     });
 
     let gui = new dat.GUI();
-    gui.add(controls, "Rotation of cube speed", 0, 0.5);
-    gui.add(controls, "Sphere's jump speed", 0, 0.5);
-    gui.add(controls, "Camera's velocity", 0, 5);
-    gui.add(controls, "Mouse look speed", 0, 0.05);
+    gui.add(controls, 'Rotation of cube speed', 0, 0.5);
+    gui.add(controls, 'Sphere\'s jump speed', 0, 0.5);
+    gui.add(controls, 'Camera\'s velocity', 0, 5);
+    gui.add(controls, 'Mouse look speed', 0, 0.05);
 
-    //updateStats = initStats("Stats");
+    updateStats = initStats('Stats');
     processKeyboard = initKeyboard();
     initMouseLook();
     initRenderTarget();
