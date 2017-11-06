@@ -195,8 +195,8 @@ function main() {
         }
     });
     connection.register('update', data => {
-        for (let i = 0; i < ballsAmount; i++) {
-            balls[i].Mesh.position.set(data[i][0], data[i][1], data[i][2]);
+        for (let [i, ball] of balls.entries()) {
+            ball.Mesh.position.set(data[i][0], data[i][1], data[i][2]);
         }
     });
 

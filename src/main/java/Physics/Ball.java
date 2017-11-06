@@ -27,11 +27,11 @@ public class Ball {
     }
 
     public void move(float dt){
-        position.add_this(velocity.mult(dt));
-        velocity.add_this(acceleration.mult(dt));
+        position.add(velocity.multiplied(dt));
+        velocity.add(acceleration.multiplied(dt));
     }
 
     public void addForce(Vector force){
-        acceleration.add_this(force.div(mass));
+        acceleration.add(force.divided(mass));
     }
 }

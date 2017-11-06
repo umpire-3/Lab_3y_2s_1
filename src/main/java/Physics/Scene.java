@@ -66,28 +66,32 @@ public class Scene {
     }
 
     private boolean SolveCollision(Ball b1, Ball b2){
-        Vector Axis = b2.position.sub(b1.position);
+        Vector Axis = b2.position.subtracted(b1.position);
         float dist = b1.radius + b2.radius + Edge;
         if(Axis.Abs() < dist) {
             Vector p = new Vector(Axis);
             p.setAbs(dist - Axis.Abs());
-            b1.position.sub_this(p.mult(b1.velocity.Abs() / (b1.velocity.Abs() + b2.velocity.Abs())));
-            b2.position.add_this(p.mult(b2.velocity.Abs() / (b1.velocity.Abs() + b2.velocity.Abs())));
+            b1.position.subtract(p.multiplied(b1.velocity.Abs() / (b1.velocity.Abs() + b2.velocity.Abs())));
+            b2.position.add(p.multiplied(b2.velocity.Abs() / (b1.velocity.Abs() + b2.velocity.Abs())));
 
-            Axis.setAbs(1.0f);
+            Axis.normalize();
 
-            Vector u1 = Axis.mult(Axis.ScalarMult(b1.velocity));
-            Axis.negate_this();
-            Vector u2 = Axis.mult(Axis.ScalarMult(b2.velocity));
+            Vector u1 = Axis.multiplied(Axis.dot(b1.velocity));
+            Axis.negate();
+            Vector u2 = Axis.multiplied(Axis.dot(b2.velocity));
             /*float m1 = b1.mass - b2.mass,
                   m2 = b1.mass + b2.mass;*/
-            Vector v1 = u1.mult(b1.mass).add(u2.mult(b2.mass)).sub(u1.sub(u2).mult(b2.mass)).mult(1.0f/(b1.mass + b2.mass)),
-                   v2 = u1.mult(b1.mass).add(u2.mult(b2.mass)).sub(u2.sub(u1).mult(b1.mass)).mult(1.0f/(b1.mass + b2.mass));
-            //v1 = u1.mult(m1).add(u2.mult(b2.mass*2.0f)).mult(1.0f/m2);
-            b1.velocity = b1.velocity.sub(u1).add(v1);
-            b2.velocity = b2.velocity.sub(u2).add(v2);
-            b1.velocity.setAbs(b1.velocity.Abs()*3f/4f);
-            b2.velocity.setAbs(b2.velocity.Abs()*3f/4f);
+            Vector v1 = u1.multiplied(b1.mass).added(u2.multiplied(b2.mass))
+                    .subtracted(u1.subtracted(u2).multiplied(b2.mass))
+                    .divided(b1.mass + b2.mass),
+                   v2 = u1.multiplied(b1.mass).added(u2.multiplied(b2.mass))
+                           .subtracted(u2.subtracted(u1).multiplied(b1.mass))
+                           .divided(b1.mass + b2.mass);
+            //v1 = u1.multiplied(m1).added(u2.multiplied(b2.mass*2.0f)).multiplied(1.0f/m2);
+            b1.velocity.subtract(u1).add(v1);
+            b2.velocity.subtract(u2).add(v2);
+            b1.velocity.multiply(3f/4f);
+            b2.velocity.multiply(3f/4f);
             return true;
         }
 

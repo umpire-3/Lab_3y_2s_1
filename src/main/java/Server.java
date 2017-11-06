@@ -85,7 +85,7 @@ public class Server {
             session.getBasicRemote().sendText(msg.toString());
         }
         if(message.equals("gravity")){
-            scene.setGravity(scene.gravity.negate_this());
+            scene.setGravity(scene.gravity.negate());
             JSONObject msg = new JSONObject();
             msg.put("command", "callback");
             session.getBasicRemote().sendText(msg.toString());

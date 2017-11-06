@@ -43,86 +43,74 @@ public class Vector {
         this.z = other.z;
     }
 
-    public Vector negate_this(){
+    public Vector negate(){
         this.x = -this.x;
         this.y = -this.y;
         this.z = -this.z;
         return this;
     }
 
-    public Vector add_this(Vector other){
+    public Vector add(Vector other){
         this.x += other.x;
         this.y += other.y;
         this.z += other.z;
         return this;
     }
 
-    public Vector sub_this(Vector other){
+    public Vector subtract(Vector other){
         this.x -= other.x;
         this.y -= other.y;
         this.z -= other.z;
         return this;
     }
 
-    public float ScalarMult(Vector other){
+    public float dot(Vector other){
         return this.x*other.x + this.y*other.y + this.z*other.z;
     }
 
-    public Vector mult_this(Vector other){
+    public Vector multiply(Vector other){
         this.set(this.y*other.z - this.z*other.y,
                 this.z*other.x - this.x*other.z,
                 this.x*other.y - this.y*other.x);
         return this;
     }
 
-    public Vector mult_this(float scalar){
+    public Vector multiply(float scalar){
         this.x *= scalar;
         this.y *= scalar;
         this.z *= scalar;
         return this;
     }
 
-    public Vector div_this(float scalar){
+    public Vector divide(float scalar){
         this.x /= scalar;
         this.y /= scalar;
         this.z /= scalar;
         return this;
     }
 
-    public Vector negate(){
-        Vector temp = new Vector(this);
-        temp.negate_this();
-        return temp;
+    public Vector negated(){
+        return new Vector(this).negate();
     }
 
-    public Vector add(Vector other){
-        Vector temp = new Vector(this);
-        temp.add_this(other);
-        return temp;
+    public Vector added(Vector other){
+        return new Vector(this).add(other);
     }
 
-    public Vector sub(Vector other){
-        Vector temp = new Vector(this);
-        temp.sub_this(other);
-        return temp;
+    public Vector subtracted(Vector other){
+        return new Vector(this).subtract(other);
     }
 
-    public Vector mult(Vector other){
-        Vector temp = new Vector(this);
-        temp.mult_this(other);
-        return temp;
+    public Vector multiplied(Vector other){
+        return new Vector(this).multiply(other);
     }
 
-    public Vector mult(float scalar){
-        Vector temp = new Vector(this);
-        temp.mult_this(scalar);
-        return temp;
+    public Vector multiplied(float scalar){
+        return new Vector(this).multiply(scalar);
     }
 
-    public Vector div(float scalar){
-        Vector temp = new Vector(this);
-        temp.div_this(scalar);
-        return temp;
+    public Vector divided(float scalar){
+        return new Vector(this).divide(scalar);
     }
 
     public float Abs(){
@@ -138,5 +126,17 @@ public class Vector {
             this.z *= scalar;
         }
         return this;
+    }
+
+    public Vector normalize() {
+        return this.setAbs(1.0f);
+    }
+
+    public Vector normilized() {
+        return new Vector(this).normalize();
+    }
+
+    public String toString() {
+        return "Vector { x: " + x + ", y: " + y + ", z: " + z + " }";
     }
 }
