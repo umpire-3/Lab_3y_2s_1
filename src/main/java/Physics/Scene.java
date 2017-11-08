@@ -36,32 +36,32 @@ public class Scene {
         if(ball.position.x < -CellSize - Edge + ball.radius){
             ball.position.x = -CellSize + ball.radius;
             ball.velocity.x = -ball.velocity.x;
-            ball.velocity.setAbs(ball.velocity.Abs()*3f/4f);
+            ball.velocity.multiply(0.8f);
         }
         if(ball.position.x > CellSize + Edge - ball.radius){
             ball.position.x = CellSize - ball.radius;
             ball.velocity.x = -ball.velocity.x;
-            ball.velocity.setAbs(ball.velocity.Abs()*3f/4f);
+            ball.velocity.multiply(0.8f);
         }
         if(ball.position.y < -CellSize - Edge + ball.radius){
             ball.position.y = -CellSize + ball.radius;
             ball.velocity.y = -ball.velocity.y;
-            ball.velocity.setAbs(ball.velocity.Abs()*3f/4f);
+            ball.velocity.multiply(0.8f);
         }
         if(ball.position.y > CellSize + Edge - ball.radius){
             ball.position.y = CellSize - ball.radius;
             ball.velocity.y = -ball.velocity.y;
-            ball.velocity.setAbs(ball.velocity.Abs()*3f/4f);
+            ball.velocity.multiply(0.8f);
         }
         if(ball.position.z < -CellSize - Edge + ball.radius){
             ball.position.z = -CellSize + ball.radius;
             ball.velocity.z = -ball.velocity.z;
-            ball.velocity.setAbs(ball.velocity.Abs()*3f/4f);
+            ball.velocity.multiply(0.8f);
         }
         if(ball.position.z > CellSize + Edge - ball.radius){
             ball.position.z = CellSize - ball.radius;
             ball.velocity.z = -ball.velocity.z;
-            ball.velocity.setAbs(ball.velocity.Abs()*3f/4f);
+            ball.velocity.multiply(0.8f);
         }
     }
 
@@ -79,19 +79,16 @@ public class Scene {
             Vector u1 = Axis.multiplied(Axis.dot(b1.velocity));
             Axis.negate();
             Vector u2 = Axis.multiplied(Axis.dot(b2.velocity));
-            /*float m1 = b1.mass - b2.mass,
-                  m2 = b1.mass + b2.mass;*/
+
             Vector v1 = u1.multiplied(b1.mass).added(u2.multiplied(b2.mass))
                     .subtracted(u1.subtracted(u2).multiplied(b2.mass))
                     .divided(b1.mass + b2.mass),
                    v2 = u1.multiplied(b1.mass).added(u2.multiplied(b2.mass))
-                           .subtracted(u2.subtracted(u1).multiplied(b1.mass))
-                           .divided(b1.mass + b2.mass);
-            //v1 = u1.multiplied(m1).added(u2.multiplied(b2.mass*2.0f)).multiplied(1.0f/m2);
-            b1.velocity.subtract(u1).add(v1);
-            b2.velocity.subtract(u2).add(v2);
-            b1.velocity.multiply(3f/4f);
-            b2.velocity.multiply(3f/4f);
+                    .subtracted(u2.subtracted(u1).multiplied(b1.mass))
+                    .divided(b1.mass + b2.mass);
+
+            b1.velocity.subtract(u1).add(v1).multiply(0.8f);
+            b2.velocity.subtract(u2).add(v2).multiply(0.8f);
             return true;
         }
 

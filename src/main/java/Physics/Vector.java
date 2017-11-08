@@ -9,6 +9,7 @@ public class Vector {
     public float y;
     public float z;
 
+    public static Vector Null = new Vector();
     public static Vector Null(){
         return new Vector();
     }
@@ -43,11 +44,30 @@ public class Vector {
         this.z = other.z;
     }
 
+    public float Abs(){
+        return (float) Math.sqrt(this.x*this.x + this.y*this.y + this.z*this.z);
+    }
+
+    public Vector setAbs(float scalar){
+        float _scalar = this.Abs();
+        if(_scalar != 0){
+            scalar /= _scalar;
+            this.x *= scalar;
+            this.y *= scalar;
+            this.z *= scalar;
+        }
+        return this;
+    }
+
     public Vector negate(){
         this.x = -this.x;
         this.y = -this.y;
         this.z = -this.z;
         return this;
+    }
+
+    public Vector normalize() {
+        return this.setAbs(1.0f);
     }
 
     public Vector add(Vector other){
@@ -68,7 +88,7 @@ public class Vector {
         return this.x*other.x + this.y*other.y + this.z*other.z;
     }
 
-    public Vector multiply(Vector other){
+    public Vector cross(Vector other){
         this.set(this.y*other.z - this.z*other.y,
                 this.z*other.x - this.x*other.z,
                 this.x*other.y - this.y*other.x);
@@ -93,6 +113,10 @@ public class Vector {
         return new Vector(this).negate();
     }
 
+    public Vector normilized() {
+        return new Vector(this).normalize();
+    }
+
     public Vector added(Vector other){
         return new Vector(this).add(other);
     }
@@ -101,8 +125,8 @@ public class Vector {
         return new Vector(this).subtract(other);
     }
 
-    public Vector multiplied(Vector other){
-        return new Vector(this).multiply(other);
+    public Vector crossed(Vector other){
+        return new Vector(this).cross(other);
     }
 
     public Vector multiplied(float scalar){
@@ -111,29 +135,6 @@ public class Vector {
 
     public Vector divided(float scalar){
         return new Vector(this).divide(scalar);
-    }
-
-    public float Abs(){
-        return (float) Math.sqrt(this.x*this.x + this.y*this.y + this.z*this.z);
-    }
-
-    public Vector setAbs(float scalar){
-        float _scalar = this.Abs();
-        if(_scalar != 0){
-            scalar /= _scalar;
-            this.x *= scalar;
-            this.y *= scalar;
-            this.z *= scalar;
-        }
-        return this;
-    }
-
-    public Vector normalize() {
-        return this.setAbs(1.0f);
-    }
-
-    public Vector normilized() {
-        return new Vector(this).normalize();
     }
 
     public String toString() {
